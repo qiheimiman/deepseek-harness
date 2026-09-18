@@ -55,7 +55,9 @@ export function apply(ctx: Context): void {
   const schema = new SettingsSchemaService(ctx)
   // Resolved once here, where `remote` is declared in this plugin's own
   // `inject`; the binder hands the same answer to every scope it binds.
-  const persistence = ctx.remote.$host.isLoopback ? 'host' : 'memory'
+  // Remote (non-loopback) browsers use 'host' persistence so that settings
+  // survive page refreshes and changes persist to the Host settings store.
+  const persistence: 'host' | 'memory' = 'host'
   const mirror = new SettingsDescribeMirror(ctx, persistence)
   ctx.effect(() => {
     const disposers = [
